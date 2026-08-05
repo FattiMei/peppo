@@ -3,10 +3,13 @@ import llvmlite.binding as llvm
 
 def usual_optimize(target_machine: llvm.targets.TargetMachine,
                    module: llvm.ModuleRef,
-                   speed_level: int = 2):
+                   speed_level: int = 2) -> llvm.ModuleRef:
     """
     Applies a standard set of optimizations to `module`
-    Mutates `module`
+    Returns an optimized module
+
+    Originally mutated `module` but some use cases need
+    to compare original and optimized modules.
     """
 
     pto = llvm.create_pipeline_tuning_options(
@@ -22,5 +25,8 @@ def usual_optimize(target_machine: llvm.targets.TargetMachine,
     #   * dead_arg_elimination
     #   * loop_deletion
     mpm = pass_builder.getModulePassManager()
-    mpm.run(module, pass_builder)
+    cloned_module = module.clone()
+    mpm.run(cloned_module, pass_builder)
+
+    return cloned_module
 

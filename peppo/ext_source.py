@@ -14,8 +14,10 @@ def _clang_compile_command(language: str,
     that outputs llvm ir
 
     An unoptimized build will automatically insert function
-    attributes like `noopt` and `noinline` which interfere
+    attributes like `optnone` and `noinline` which interfere
     with later optimization passes
+
+    https://discourse.llvm.org/t/better-way-to-get-no-optimisations-from-clang-than-o1-disable-llvm-passes/76859/8
     """
     cmd = [
             'clang',
@@ -64,6 +66,8 @@ class ExtSource:
         llvm_ir = res.stdout.decode()
         module = llvm.parse_assembly(llvm_ir)
         module.verify()
+
+        assert(type(module) == llvm.ModuleRef)
 
         return module
 
