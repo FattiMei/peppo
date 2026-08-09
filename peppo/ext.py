@@ -1,27 +1,8 @@
 from enum import Enum
 from dataclasses import dataclass
 
-from peppo.ir import IrType, Ir
-from peppo.compilers import Clang, ClangIR, Flang, FlangNew
-
-
-class Language(Enum):
-    C       = 'c'
-    CPP     = 'c++'
-    FORTRAN = 'fortran'
-
-
-# this table encodes the logic for which compiler
-# to use given the language and IR requirements
-COMPILE_LOGIC_TABLE = {
-        (Language.C      , IrType.LLVM_IR): Clang,
-        (Language.CPP    , IrType.LLVM_IR): Clang,
-        (Language.FORTRAN, IrType.LLVM_IR): Flang,
-
-        (Language.C      , IrType.MLIR_IR): ClangIR,
-        (Language.CPP    , IrType.MLIR_IR): ClangIR,
-        (Language.FORTRAN, IrType.MLIR_IR): FlangNew,
-        }
+import peppo.compiler
+from peppo.ir import Language, IrType, Ir
 
 
 @dataclass
@@ -33,14 +14,10 @@ class ExtSource:
     language: Language
 
     def compile(self, ir_type: IrType) -> Ir:
-        compiler = COMPILE_LOGIC_TABLE[
-                (self.language, IrType.LLVM_IR)
-                ]()
-
-        src = compiler.compile(
+        return peppo.compiler.compile(
                 self.src,
-                self.language.value)
-        return Ir(ir_type, src)
+                self.language,
+                ir_type)
 
     def compile_to_llvm_ir(self) -> Ir:
         return self.compile(IrType.LLVM_IR)

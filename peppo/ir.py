@@ -2,6 +2,12 @@ from enum import Enum
 from dataclasses import dataclass
 
 
+class Language(Enum):
+    C       = 'c'
+    CPP     = 'c++'
+    FORTRAN = 'fortran'
+
+
 class IrType(Enum):
     LLVM_IR = 'llvm'
     MLIR_IR = 'mlir'
