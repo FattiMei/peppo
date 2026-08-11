@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools>=64", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["scikit-build-core"]
+build-backend = "scikit_build_core.build"
 
 [project]
 name = "peppo"
@@ -10,14 +10,9 @@ authors = [
 	{ name = "Mei Matteo", email = "teomei68@gmail.com" }
 ]
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 
 # runtime dependencies
 dependencies = [
 ]
 
-[tool.setuptools.packages.find]
-where = ["."]
-
-[tool.pytest.ini_options]
-python_files = "tests/*.py"
