@@ -26,9 +26,17 @@
 #define CLANGIR_PATH ""
 #endif
 
+#ifndef LLVM_INCLUDE_DIRS
+#define LLVM_INCLUDE_DIRS ""
+#endif
 
-PYBIND11_MODULE(_paths, m) {
-	m.doc() = "Bridge module to import the LLVM tool paths";
+#ifndef LLVM_DEFINITIONS
+#define LLVM_DEFINITIONS ""
+#endif
+
+
+PYBIND11_MODULE(_env, m) {
+	m.doc() = "Bridge module to import LLVM/MLIR related variables";
 
 	// all these functions return an empty string when the program is not found
 	m.def("get_clang_path",
@@ -45,4 +53,10 @@ PYBIND11_MODULE(_paths, m) {
 
 	m.def("get_clangir_path",
 	      []() { return std::string(CLANGIR_PATH); });
+
+	m.def("get_llvm_include_dirs",
+	      []() { return std::string(LLVM_INCLUDE_DIRS); });
+
+	m.def("get_llvm_definitions",
+	      []() { return std::string(LLVM_DEFINITIONS); });
 }

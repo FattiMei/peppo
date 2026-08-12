@@ -12,7 +12,14 @@ include(FindLlvmTools)
 cmake_policy(SET CMP0148 NEW)
 find_package(pybind11 CONFIG REQUIRED)
 
-set(PATHS_MODULE "_paths")
-pybind11_add_module(${PATHS_MODULE} MODULE peppo/ext/_paths.cpp)
-target_compile_definitions(${PATHS_MODULE} PRIVATE ${LLVM_TOOLS_DEFINES})
-install(TARGETS ${PATHS_MODULE} DESTINATION peppo/ext)
+set(ENV_MODULE "_env")
+pybind11_add_module(${ENV_MODULE} MODULE peppo/_env.cpp)
+target_compile_definitions(${ENV_MODULE} PRIVATE ${LLVM_TOOLS_DEFINES})
+target_compile_definitions(${ENV_MODULE} PRIVATE
+	"LLVM_INCLUDE_DIRS=\"${LLVM_INCLUDE_DIRS}\"")
+target_compile_definitions(${ENV_MODULE} PRIVATE
+	"LLVM_DEFINITIONS=\"${LLVM_DEFINITIONS}\"")
+
+install(TARGETS ${ENV_MODULE} DESTINATION peppo/_env)
+
+
