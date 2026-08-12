@@ -1,12 +1,4 @@
-from peppo._env import (
-    get_clang_path,
-    get_opt_path,
-    get_flang_path,
-    get_mlir_opt_path,
-    get_clangir_path,
-    get_llvm_include_dirs,
-    get_llvm_definitions,
-)
+from peppo._env import *
 
 
 ENV = {

@@ -20,6 +20,5 @@ target_compile_definitions(${ENV_MODULE} PRIVATE
 target_compile_definitions(${ENV_MODULE} PRIVATE
 	"LLVM_DEFINITIONS=\"${LLVM_DEFINITIONS}\"")
 
-install(TARGETS ${ENV_MODULE} DESTINATION peppo/_env)
-
+install(TARGETS ${ENV_MODULE} DESTINATION peppo)
 
