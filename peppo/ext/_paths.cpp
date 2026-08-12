@@ -6,12 +6,12 @@
 //
 // I hope this is a simple enough mechanism for registering the external tools
 // It shouldn't be modified very much
-#ifndef CLANG_PATH
-#define CLANG_PATH ""
-#endif
-
 #ifndef OPT_PATH
 #define OPT_PATH ""
+#endif
+
+#ifndef CLANG_PATH
+#define CLANG_PATH ""
 #endif
 
 #ifndef FLANG_PATH
