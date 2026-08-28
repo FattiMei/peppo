@@ -2,22 +2,38 @@ from enum import Enum
 from dataclasses import dataclass
 
 
-class Language(Enum):
-    C       = 'c'
-    CPP     = 'c++'
-    FORTRAN = 'fortran'
+class Type(Enum):
+    SCALAR = 0
 
 
-class IrType(Enum):
-    LLVM_IR = 'llvm'
-    MLIR_IR = 'mlir'
+class Value:
+    pass
+
+
+class Constant(Value):
+    def __init__(self, value, dtype: Type = None):
+        self.value = value
+        self.dtype = dtype
 
 
 @dataclass
-class Ir:
-    ir_type: IrType
-    src: str
+class Mul(Value):
+    left:  Value
+    right: Value
+    dtype: Type = None
+    name:  str = None
 
-    def __str__(self) -> str:
-        return self.src
+
+@dataclass
+class Add(Value):
+    left:  Value
+    right: Value
+    dtype: Type = None
+    name:  str = None
+
+
+@dataclass
+class Function(Value):
+    signature: tuple[Type]
+    body: Value = None
 
