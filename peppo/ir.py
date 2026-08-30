@@ -1,14 +1,12 @@
-import inspect
-from enum import Enum
-from collections.abc import Callable
+from inspect import signature
 from dataclasses import dataclass
+from collections.abc import Callable
 
-
-class DType:
-    pass
+from peppo.types import DType
 
 
 class Value:
+    # in the future this could override the + - * / operators
     def __init__(self, name: str = None, dtype: DType = None):
         self.name = name
         self.dtype = dtype
@@ -25,6 +23,57 @@ class BinExpr(Value):
         super().__init__(name=name)
         self.left = left
         self.right = right
+
+
+class Eq(BinExpr):
+    def __init__(self, left: Value, right: Value, name: str = None):
+        super().__init__(left, right, name)
+
+
+class Add(BinExpr):
+    def __init__(self, left: Value, right: Value, name: str = None):
+        super().__init__(left, right, name)
+
+
+class Sub(BinExpr):
+    def __init__(self, left: Value, right: Value, name: str = None):
+        super().__init__(left, right, name)
+
+
+class Mul(BinExpr):
+    def __init__(self, left: Value, right: Value, name: str = None):
+        super().__init__(left, right, name)
+
+
+class And(BinExpr):
+    def __init__(self, left: Value, right: Value, name: str = None):
+        super().__init__(left, right, name)
+
+
+class Shr(BinExpr):
+    def __init__(self, left: Value, right: Value, name: str = None):
+        super().__init__(left, right, name)
+
+
+class MemRef(BinExpr):
+    def __init__(self, left: Value, right: Value, name: str = None):
+        super().__init__(left, right, name)
+
+
+class If(Value):
+    def __init__(self, cond: Value, then_expr: Value, else_expr: Value, name: str = None):
+        super().__init__(name=name)
+        self.cond = cond
+        self.then_expr = then_expr
+        self.else_expr = else_expr
+
+
+class Select(Value):
+    def __init__(self, cond: Value, then_expr: Value, else_expr: Value, name: str = None):
+        super().__init__(name=name)
+        self.cond = cond
+        self.then_expr = then_expr
+        self.else_expr = else_expr
 
 
 # this is not part of the ir, but it's necessary to define procedures as decorated python functions
@@ -61,7 +110,7 @@ def proc(f):
     The result is a callable Function object that can be transformed as the user requires
     """
     return Function(
-        signature=inspect.signature(f),
+        signature=signature(f),
         body=f,
         name=f.__name__)
 
