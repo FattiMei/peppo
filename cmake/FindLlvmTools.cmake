@@ -17,6 +17,7 @@ endfunction()
 
 register_tool_path(OPT_PATH      opt)
 register_tool_path(CLANG_PATH    clang)
+register_tool_path(CLANGXX_PATH  clang++)
 register_tool_path(FLANG_PATH    flang)
 register_tool_path(MLIR_OPT_PATH mlir-opt)
 register_tool_path(CLANGIR_PATH  xxx)
@@ -24,6 +25,7 @@ register_tool_path(CLANGIR_PATH  xxx)
 list(APPEND LLVM_TOOLS_PATHS
 	OPT_PATH
 	CLANG_PATH
+	CLANGXX_PATH
 	FLANG_PATH
 	MLIR_OPT_PATH
 	CLANGIR_PATH)

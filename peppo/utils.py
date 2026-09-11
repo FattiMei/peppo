@@ -3,6 +3,7 @@ from peppo._env import *
 
 ENV = {
     'CLANG_PATH'       : get_clang_path,
+    'CLANGXX_PATH'     : get_clangxx_path,
     'OPT_PATH'         : get_opt_path,
     'FLANG_PATH'       : get_flang_path,
     'MLIR_OPT_PATH'    : get_mlir_opt_path,

@@ -14,7 +14,13 @@ requires-python = ">=3.9"
 
 # runtime dependencies
 dependencies = [
+	"llvmlite",
+	"pytest"
 ]
 
 [tool.scikit-build]
 build.verbose = true
+
+[tool.pytest.ini_options]
+python_files = "tests/*.py"
+

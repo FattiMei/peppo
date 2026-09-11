@@ -14,6 +14,10 @@
 #define CLANG_PATH ""
 #endif
 
+#ifndef CLANGXX_PATH
+#define CLANGXX_PATH ""
+#endif
+
 #ifndef FLANG_PATH
 #define FLANG_PATH ""
 #endif
@@ -41,6 +45,9 @@ PYBIND11_MODULE(_env, m) {
 	// all these functions return an empty string when the program is not found
 	m.def("get_clang_path",
 	      []() { return std::string(CLANG_PATH); });
+
+	m.def("get_clangxx_path",
+	      []() { return std::string(CLANGXX_PATH); });
 
 	m.def("get_opt_path",
 	      []() { return std::string(OPT_PATH); });
