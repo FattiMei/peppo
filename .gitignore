@@ -2,3 +2,5 @@
 .venv/
 peppo.egg-info/
 **/__pycache__/
+llvm-project/
+**/build
