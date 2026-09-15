@@ -20,4 +20,5 @@ add_definitions(${LLVM_DEFINITIONS})
 
 include(AddLLVM)
 add_subdirectory(strength-reduction)
+add_subdirectory(addition)
 
