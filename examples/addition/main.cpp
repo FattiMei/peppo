@@ -30,7 +30,6 @@ using namespace llvm::sys;
 static std::unique_ptr<LLVMContext> Context;
 
 
-// è un pattern passare i moduli per puntatore?
 void generate_addition_func(Type* type, const char* type_name, Module& mod, IRBuilder<>& builder) {
 	const bool is_integer = type->isIntegerTy();
 	const bool is_float = (
@@ -72,10 +71,7 @@ int main() {
 	InitializeAllAsmParsers();
 	InitializeAllAsmPrinters();
 
-	// BFloat is not enabled because not all targets support it
-	//
-	// a Module can be target independent, but its lowering must be target informed
-	// this will spawn situations in which the lowering for some targets fail
+	// BFloat is removed as not all targets support it
 	const std::vector<std::pair<Type*, const char*>> types = {
 		{Type::getInt8Ty  (*Context), "i8"  },
 		{Type::getInt16Ty (*Context), "i16" },
@@ -83,7 +79,6 @@ int main() {
 		{Type::getInt64Ty (*Context), "i64" },
 		{Type::getInt128Ty(*Context), "i128"},
 		{Type::getHalfTy  (*Context), "half"},
-		// {Type::getBFloatTy(*Context), "bf16"},
 		{Type::getFloatTy (*Context), "f32" },
 		{Type::getDoubleTy(*Context), "f64" },
 	};
@@ -95,8 +90,6 @@ int main() {
 	};
 
 
-	// builds a module that contains the implementations of addition
-	// between different numeric types
 	std::unique_ptr<Module> mod =
 		std::make_unique<Module>("addition_module", *Context);
 	std::unique_ptr<IRBuilder<>> builder =
@@ -105,10 +98,6 @@ int main() {
 	for (auto [type, type_name] : types) {
 		generate_addition_func(type, type_name, *mod, *builder);
 	}
-
-	// here I build once the pass manager which is responsible of
-	//   * (not included yet) validating the module
-	//   * converting the whole module to assembly
 
 	std::string Error;
 	for (const char* target_triple : triplets) {
@@ -128,11 +117,6 @@ int main() {
 			Reloc::PIC_
 		);
 
-		// WARNING: this mutates the module, but I think it's necessary
-		// the data layout controls endianness, alignment...
-		mod->setDataLayout(target_machine->createDataLayout());
-
-
 		// I want to save the assembly into my data structure, instead of file
 		// I know the allocations are all over the place...
 		SmallVector<char,0> asm_buffer;
@@ -142,9 +126,12 @@ int main() {
 		// it will be responsible of:
 		//   * (not included yet) validating the module
 		//   * converting the whole module to assembly
-		llvm::legacy::PassManager pass;
+		//
+		// the passes that convert to assembly work only for the whole module,
+		// using a FunctionPassManager here will segfault
+		llvm::legacy::PassManager pm;
 		if (target_machine->addPassesToEmitFile(
-			pass,
+			pm,
 			asm_stream,
 			nullptr,
 			llvm::CodeGenFileType::AssemblyFile)) {
@@ -153,10 +140,24 @@ int main() {
 			continue;
 		}
 
-		pass.run(*mod);
+		// WARNING: this mutates the module, but I think it's necessary
+		// the data layout controls endianness, alignment...
+		mod->setDataLayout(target_machine->createDataLayout());
 
+		// if I included the BFloat type, some targets couldn't lower the module to assembly
+		// this is the exact point of failure, an UNRECOVERABLE (?) failure sadly
+		pm.run(*mod);
+
+		// A possible requirement would be to inspect the assembly of a particular function
+		// in a module. As already said, only the whole module can be converted to assembly.
+		//
+		// A solution could be to create a module clone with only the target function in it,
+		// then apply the pass to this clone. It makes only marginal sense because the target
+		// function may be calling other functions which won't be lowered to assembly, for now
+		// we keep this limitation and work around by parsing the output string with other tools
 		std::string asm_string(asm_buffer.begin(), asm_buffer.end());
-		errs() << asm_string << "\n";
+		std::cout << "# " << target_triple << "\n";
+		std::cout << asm_string << "\n";
 	}
 
 	return 0;
