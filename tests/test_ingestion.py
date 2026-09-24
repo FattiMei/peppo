@@ -33,22 +33,24 @@ HELLO_WORLD_FORTRAN = """
 """
 
 
-CLANG_TOOL = Clang()
-FLANG_TOOL = Flang()
+CLANG_TOOL = Clang('/usr/bin/clang++')
+FLANG_TOOL = Flang('/usr/bin/flang-22')
 
 
-def test_clang_llvm():
-    llvm_ir = CLANG_TOOL.compile_to_llvm(HELLO_WORLD_C, language='c')
+@pytest.mark.skipif(CLANG_TOOL.path == '', reason="can't find clang")
+class TestClang:
+    def test_llvm(self):
+        llvm_ir = CLANG_TOOL.compile_to_llvm(HELLO_WORLD_C, language='c')
+
+    def test_clang_cir():
+        cir = CLANG_TOOL.compile_to_cir(HELLO_WORLD_CPP, language='c++')
 
 
-def test_clang_cir():
-    cir = CLANG_TOOL.compile_to_cir(HELLO_WORLD_CPP, language='c++')
+@pytest.mark.skipif(FLANG_TOOL.path == '', reason="can't find flang")
+class TestFlang:
+    def test_llvm(self):
+        llvm_ir = FLANG_TOOL.compile_to_llvm(HELLO_WORLD_FORTRAN)
 
-
-def test_flang_llvm():
-    llvm_ir = FLANG_TOOL.compile_to_llvm(HELLO_WORLD_FORTRAN)
-
-
-def test_flang_fir():
-    fir = FLANG_TOOL.compile_to_fir(HELLO_WORLD_FORTRAN)
+    def test_fir(self):
+        fir = FLANG_TOOL.compile_to_fir(HELLO_WORLD_FORTRAN)
 

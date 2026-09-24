@@ -35,8 +35,8 @@ class Flang(Tool):
     def compile_to_llvm(self, src: str) -> str:
         cmd = [
             self.path,
-            '-S', '-emit-llvm',
-            '-x', 'f90', '-',
+            '-fc1', '-emit-llvm',
+            '-x', 'f95', '-',
             '-o', '-'
         ]
 
@@ -46,7 +46,7 @@ class Flang(Tool):
         cmd = [
             self.path,
             '-fc1', '-emit-mlir',
-            '-x', 'f90', '-',
+            '-x', 'f95', '-',
             '-o', '-'
         ]
 
