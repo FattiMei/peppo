@@ -1,51 +1,54 @@
 import pytest
-from peppo.ingest import ExtSource, Language, compile_snippet
+from peppo.ext.compilers import (
+    Clang,
+    Flang
+)
 
 
-def test_c_ingestion():
-    hello_world_c = ExtSource(
-        language=Language.C,
-        src="""
-            #include <stdio.h>
+HELLO_WORLD_C = """
+    #include <stdio.h>
 
-            int main() <%
-                printf("Hello, World!\\n");
-                return 0;
-            %>
-        """
-    )
-
-    print(hello_world_c.src)
-
-    compile_snippet(hello_world_c)
+    int main() <%
+        printf("Hello, World!\\n");
+        return 0;
+    %>
+"""
 
 
-def test_cpp_ingestion():
-    hello_world_cpp = ExtSource(
-        language=Language.CPP,
-        src="""
-            #include <iostream>
+HELLO_WORLD_CPP = """
+    #include <iostream>
 
-            int main() <%
-                std::cout << "Hello, World" << std::endl;
-                return 0;
-            %>
-        """
-    )
-
-    compile_snippet(hello_world_cpp)
+    int main() <%
+        std::cout << "Hello, World" << std::endl;
+        return 0;
+    %>
+"""
 
 
-def test_fortran_ingestion():
-    hello_world_fortran = ExtSource(
-        language=Language.F90,
-        src="""
-            program hello
-            ! This is a comment line; it is ignored by the compiler
-                print *, 'Hello, World!'
-            end program hello
-        """
-    )
+HELLO_WORLD_FORTRAN = """
+    program hello
+    ! This is a comment line; it is ignored by the compiler
+        print *, 'Hello, World!'
+    end program hello
+"""
 
-    compile_snippet(hello_world_fortran)
+
+CLANG_TOOL = Clang()
+FLANG_TOOL = Flang()
+
+
+def test_clang_llvm():
+    llvm_ir = CLANG_TOOL.compile_to_llvm(HELLO_WORLD_C, language='c')
+
+
+def test_clang_cir():
+    cir = CLANG_TOOL.compile_to_cir(HELLO_WORLD_CPP, language='c++')
+
+
+def test_flang_llvm():
+    llvm_ir = FLANG_TOOL.compile_to_llvm(HELLO_WORLD_FORTRAN)
+
+
+def test_flang_fir():
+    fir = FLANG_TOOL.compile_to_fir(HELLO_WORLD_FORTRAN)
 

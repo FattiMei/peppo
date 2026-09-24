@@ -1,6 +1,6 @@
 [build-system]
-requires = ["scikit-build-core", "pybind11"]
-build-backend = "scikit_build_core.build"
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "peppo"
@@ -14,12 +14,10 @@ requires-python = ">=3.9"
 
 # runtime dependencies
 dependencies = [
+	"xdsl",
 	"llvmlite",
 	"pytest"
 ]
-
-[tool.scikit-build]
-build.verbose = true
 
 [tool.pytest.ini_options]
 python_files = "tests/*.py"
