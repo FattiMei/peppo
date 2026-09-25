@@ -2,8 +2,14 @@ from peppo.ext.tool import Tool
 
 
 class Clang(Tool):
-    def __init__(self, path: str = ''):
+    def __init__(self, path: str = None):
         super().__init__(path)
+
+    def _get_env_var_name(self) -> str:
+        return 'CLANG_PATH'
+
+    def _get_tool_name(self) -> str:
+        return 'clang'
 
     def compile_to_llvm(self, src: str, language: str = 'c++') -> str:
         cmd = [
@@ -29,8 +35,14 @@ class Clang(Tool):
 
 
 class Flang(Tool):
-    def __init__(self, path: str = ''):
+    def __init__(self, path: str = None):
         super().__init__(path)
+
+    def _get_env_var_name(self) -> str:
+        return 'FLANG_PATH'
+
+    def _get_tool_name(self) -> str:
+        return 'flang'
 
     def compile_to_llvm(self, src: str) -> str:
         cmd = [

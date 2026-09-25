@@ -33,20 +33,27 @@ HELLO_WORLD_FORTRAN = """
 """
 
 
-CLANG_TOOL = Clang('/usr/bin/clang++')
-FLANG_TOOL = Flang('/usr/bin/flang-22')
+# if the appropriate environment variable is not selected,
+# the tool is searched in the default search path
+CLANG_TOOL = Clang()
+FLANG_TOOL = Flang()
 
 
-@pytest.mark.skipif(CLANG_TOOL.path == '', reason="can't find clang")
+@pytest.mark.skipif(CLANG_TOOL.path is None, reason="can't find clang")
 class TestClang:
     def test_llvm(self):
         llvm_ir = CLANG_TOOL.compile_to_llvm(HELLO_WORLD_C, language='c')
 
-    def test_clang_cir():
-        cir = CLANG_TOOL.compile_to_cir(HELLO_WORLD_CPP, language='c++')
+    # this test is not that important because it relies on clang being
+    # compiled with clangir support
+    def test_clang_cir(self):
+        try:
+            cir = CLANG_TOOL.compile_to_cir(HELLO_WORLD_CPP, language='c++')
+        except RuntimeError:
+            pytest.skip("this installation of clang doesn't support cir")
 
 
-@pytest.mark.skipif(FLANG_TOOL.path == '', reason="can't find flang")
+@pytest.mark.skipif(FLANG_TOOL.path is None, reason="can't find flang")
 class TestFlang:
     def test_llvm(self):
         llvm_ir = FLANG_TOOL.compile_to_llvm(HELLO_WORLD_FORTRAN)
