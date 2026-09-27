@@ -20,6 +20,15 @@ class MlirTranslate(Tool):
         ]
 
         return self.call(cmd, src)
+    
+    def translate_mlir_to_llvm(self, src: str) -> str:
+        cmd = [
+            self.path,
+            '--mlir-to-llvmir',
+            '-o', '-'
+        ]
+
+        return self.call(cmd, src)
 
 
 class FirOpt(Tool):
