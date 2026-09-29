@@ -59,7 +59,7 @@ class Tool(ABC):
     def _get_tool_name(self) -> str:
         pass
 
-    def call(self, cmd: list[str], input: str) -> str:
+    def _call(self, cmd: list[str], input: str) -> str:
         res = subprocess.run(
             cmd,
             input=input.encode(),

@@ -19,7 +19,7 @@ class MlirTranslate(Tool):
             '-o', '-',
         ]
 
-        return self.call(cmd, src)
+        return self._call(cmd, src)
     
     def translate_mlir_to_llvm(self, src: str) -> str:
         cmd = [
@@ -28,7 +28,7 @@ class MlirTranslate(Tool):
             '-o', '-'
         ]
 
-        return self.call(cmd, src)
+        return self._call(cmd, src)
 
 
 class FirOpt(Tool):
@@ -48,4 +48,24 @@ class FirOpt(Tool):
             '-o', '-',
         ]
 
-        return self.call(cmd, src)
+        return self._call(cmd, src)
+
+
+class MlirOpt(Tool):
+    def __init__(self, path: str = None):
+        super().__init__(path)
+
+    def _get_env_var_name(self) -> str:
+        return 'MLIR_OPT_PATH'
+
+    def _get_tool_name(self) -> str:
+        return 'mlir-opt'
+
+    def canonicalize(self, src: str) -> str:
+        cmd = [
+            self.path,
+            '--canonicalize',
+            '-o', '-',
+        ]
+
+        return self._call(cmd, src)

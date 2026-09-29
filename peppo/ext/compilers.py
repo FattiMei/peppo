@@ -21,7 +21,7 @@ class Clang(Tool):
             '-o', '-',
         ]
 
-        return self.call(cmd, src)
+        return self._call(cmd, src)
 
     def compile_to_cir(self, src: str, language: str = 'c++') -> str:
         cmd = [
@@ -31,7 +31,7 @@ class Clang(Tool):
             '-o', '-',
         ]
 
-        return self.call(cmd, src)
+        return self._call(cmd, src)
 
 
 class Flang(Tool):
@@ -52,7 +52,7 @@ class Flang(Tool):
             '-o', '-'
         ]
 
-        return self.call(cmd, src)
+        return self._call(cmd, src)
 
     def compile_to_fir(self, src: str) -> str:
         cmd = [
@@ -62,5 +62,5 @@ class Flang(Tool):
             '-o', '-'
         ]
 
-        return self.call(cmd, src)
+        return self._call(cmd, src)
 
